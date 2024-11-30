@@ -21,7 +21,7 @@ MODE_TRAIN_MEASURE: str = 'train+measure'
 
 DEFAULT_PROJECT: str = "Default"
 DEFAULT_BATCH: int = 512
-DEFAULT_EVAL_MAX_BATCH: int = 256
+DEFAULT_EVAL_MAX_BATCH: int = 512 #256
 DEFAULT_EPOCH: int = 50
 DEFAULT_LEARNING_RATE: float = None
 DEFAULT_LEARNING_RATE_32: float = 2e-4
@@ -105,7 +105,7 @@ class TrainingConfig:
     result: str = DEFAULT_RESULT
     
     eval_sample_n: int = 16  # how many images to sample during evaluation
-    measure_sample_n: int = 2048
+    measure_sample_n: int = 10000 #2048
     batch_32: int = 128
     batch_256: int = 64
     gradient_accumulation_steps: int = 1
@@ -243,7 +243,7 @@ def setup():
         os.makedirs(config.ckpt_path, exist_ok=True)
     
     name_id = str(config.output_dir).split('/')[-1]
-    wandb.init(project=config.project, name=name_id, id=name_id, settings=wandb.Settings(start_method="fork"))
+    #wandb.init(project=config.project, name=name_id, id=name_id, settings=wandb.Settings(start_method="fork"))
     print(f"Argument Final: {config.__dict__}")
     return config
 
@@ -274,8 +274,8 @@ def get_accelerator(config: TrainingConfig):
     accelerator = Accelerator(
         mixed_precision=config.mixed_precision,
         gradient_accumulation_steps=config.gradient_accumulation_steps, 
-        log_with=["tensorboard", "wandb"],
-        # log_with="tensorboard",
+        #log_with=["tensorboard", "wandb"],
+        log_with="tensorboard",
         logging_dir=os.path.join(config.output_dir, "logs")
     )
     return accelerator
@@ -659,6 +659,7 @@ if config.mode == MODE_TRAIN or config.mode == MODE_RESUME or config.mode == MOD
         accelerator.clear()
         measure(config=config, accelerator=accelerator, dataset_loader=dsl, folder_name='measure', pipeline=pipeline)
 elif config.mode == MODE_SAMPLING:
+    print(f"Config:\n {config}")
     # pipeline = DDPMPipeline(unet=accelerator.unwrap_model(model), scheduler=noise_sched)
     pipeline = get_pipeline(unet=accelerator.unwrap_model(model), scheduler=noise_sched)
     if config.sample_ep != None:

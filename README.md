@@ -1,3 +1,15 @@
+# Team Members
+Mohaiminul Al Nahian (alnahian37)
+Rama Al Attar (ramaattar)
+
+# Contribution
+- We have both reproduced an example from the paper and have obtained the values of FID and MSE
+- Rama has added a new trigger to the model and obtained the FID and MSE for comparison with existing triggers.
+- Mohaiminul has trained the model with an existing trigger, then provided the model with new triggers (not previously seen by the model) during sampling to observe the behavior of the target output.
+- We have both worked on the analysis of the outputs and the reporting needed for the project.
+
+
+# README of initial BadDiffusion Repo
 # BadDiffusion
 Official repo to reproduce the paper "How to Backdoor Diffusion Models?" published at CVPR 2023
 

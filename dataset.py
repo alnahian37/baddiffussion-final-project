@@ -382,6 +382,7 @@ class Backdoor():
     GREY_BG_RATIO = 0.3
     
     STOP_SIGN_IMG = "static/stop_sign_wo_bg.png"
+    DIS_PARK_SIGN = "static/Disability_parking.png"
     # STOP_SIGN_IMG = "static/stop_sign_bg_blk.jpg"
     CAT_IMG = "static/cat_wo_bg.png"
     GLASSES_IMG = "static/glasses.png"
@@ -409,6 +410,7 @@ class Backdoor():
     TRIGGER_BIG_BOX = "BIG_BOX"
     TRIGGER_BOX_18 = "BOX_18"
     TRIGGER_BOX_14 = "BOX_14"
+
     TRIGGER_BOX_11 = "BOX_11"
     TRIGGER_BOX_8 = "BOX_8"
     TRIGGER_BOX_4 = "BOX_4"
@@ -418,6 +420,13 @@ class Backdoor():
     TRIGGER_STOP_SIGN_11 = "STOP_SIGN_11"
     TRIGGER_STOP_SIGN_8 = "STOP_SIGN_8"
     TRIGGER_STOP_SIGN_4 = "STOP_SIGN_4"
+    
+    TRIGGER_DIS_PARK_SIGN_18 = "TRIGGER_DIS_PARK_SIGN_18"
+    TRIGGER_DIS_PARK_SIGN_14 = "TRIGGER_DIS_PARK_SIGN_14"
+    TRIGGER_DIS_PARK_SIGN_11 = "TRIGGER_DIS_PARK_SIGN_11"
+    TRIGGER_DIS_PARK_SIGN_8 = "TRIGGER_DIS_PARK_SIGN_8"
+    TRIGGER_DIS_PARK_SIGN_4 = "TRIGGER_DIS_PARK_SIGN_4"
+    TRIGGER_DIS_PARK_SIGN_2 = "TRIGGER_DIS_PARK_SIGN_2"
     
     # GREY_NORM_MIN = 0
     # GREY_NORM_MAX = 1
@@ -586,9 +595,29 @@ class Backdoor():
         elif type == Backdoor.TRIGGER_STOP_SIGN_11:
             return self.__get_img_trigger(path=Backdoor.STOP_SIGN_IMG, image_size=image_size, channel=channel, trigger_sz=11, vmin=vmin, vmax=vmax, x=-2, y=-2)
         elif type == Backdoor.TRIGGER_STOP_SIGN_8:
+            print(f"image size TRIGGER_STOP_SIGN_8: {image_size}")	
             return self.__get_img_trigger(path=Backdoor.STOP_SIGN_IMG, image_size=image_size, channel=channel, trigger_sz=8, vmin=vmin, vmax=vmax, x=-2, y=-2)
         elif type == Backdoor.TRIGGER_STOP_SIGN_4:
+            print(f"image size TRIGGER_STOP_SIGN_4: {image_size}")	
             return self.__get_img_trigger(path=Backdoor.STOP_SIGN_IMG, image_size=image_size, channel=channel, trigger_sz=4, vmin=vmin, vmax=vmax, x=-2, y=-2)
+       
+               
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_18:
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=18, vmin=vmin, vmax=vmax, x=-2, y=-2)
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_14:
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=14, vmin=vmin, vmax=vmax, x=-2, y=-2)
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_11:
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=11, vmin=vmin, vmax=vmax, x=-2, y=-2)
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_8:
+            print(f"image size TRIGGER_STOP_SIGN_8: {image_size}")	
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=8, vmin=vmin, vmax=vmax, x=-2, y=-2)
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_4:
+            print(f"image size TRIGGER_DIS_PARK_SIGN_4: {image_size}")	
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=4, vmin=vmin, vmax=vmax, x=-2, y=-2)
+        elif type == Backdoor.TRIGGER_DIS_PARK_SIGN_2:
+            print(f"image size TRIGGER_DIS_PARK_SIGN_2: {image_size}")	
+            return self.__get_img_trigger(path=Backdoor.DIS_PARK_SIGN, image_size=image_size, channel=channel, trigger_sz=2, vmin=vmin, vmax=vmax, x=-2, y=-2)
+            
         elif type == Backdoor.TRIGGER_NONE:    
             # trig = torch.zeros(channel, image_size, image_size)
             trig = torch.full(size=(channel, image_size, image_size), fill_value=vmin)
@@ -628,6 +657,7 @@ class Backdoor():
         channel_loc = self.__check_channel(sample=trigger, channel_first=None)
         channel = trigger.shape[channel_loc]
         image_size = self.__check_image_size(sample=trigger, channel_loc=channel_loc)
+        print(f"channel_loc: {channel_loc}")
         print(f"image size: {image_size}")
         if type == Backdoor.TARGET_TG:
             if trigger == None:
@@ -698,7 +728,8 @@ class ImagePathDataset(torch.utils.data.Dataset):
 # %%
 if __name__ == "__main__":
     # You can use the following code to visualize the triggers and the targets
-    ds_root = os.path.join('datasets')
+   # ds_root = os.path.join('datasets')
+    ds_root = os.path.join(os.getcwd(), 'datasets')
     dsl = DatasetLoader(root=ds_root, name=DatasetLoader.CIFAR10, batch_size=128).set_poison(trigger_type=Backdoor.TRIGGER_GLASSES, target_type=Backdoor.TARGET_CAT, clean_rate=0.2, poison_rate=0.4).prepare_dataset(mode=DatasetLoader.MODE_FIXED)
     print(f"Full Dataset Len: {len(dsl)}")
 
@@ -759,9 +790,17 @@ if __name__ == "__main__":
     run = os.path.dirname(os.path.abspath(__file__))
     root_p = os.path.join(run, 'datasets')
     backdoor = Backdoor(root=root_p)
+    x = -2
+    y = -2
     
     # BOX_14 Trigger
     tr = backdoor.get_trigger(type=Backdoor.TRIGGER_STOP_SIGN_14, channel=channel, image_size=image_size, vmin=vmin, vmax=vmax)
+    backdoor.show_image(img=tr)
+    # STOP_SIGN_4 Trigger
+    tr = backdoor.get_trigger(type=Backdoor.TRIGGER_STOP_SIGN_8, channel=channel, image_size=image_size, vmin=vmin, vmax=vmax)
+    backdoor.show_image(img=tr)
+    # Disability Parking Trigger
+    tr = backdoor.get_trigger(type=Backdoor.TRIGGER_DIS_PARK_SIGN_8, channel=channel, image_size=image_size, vmin=vmin, vmax=vmax)
     backdoor.show_image(img=tr)
     # SM_BOX Trigger
     tr = backdoor.get_trigger(type=Backdoor.TRIGGER_BOX_14, channel=channel, image_size=image_size, vmin=vmin, vmax=vmax)
@@ -778,10 +817,13 @@ if __name__ == "__main__":
     # GLASSES Trigger
     tr = backdoor.get_trigger(type=Backdoor.TRIGGER_GLASSES, channel=3, image_size=image_size, vmin=vmin, vmax=1)
     backdoor.show_image(img=tr)
+    # Disability Parking Trigger
+    tr = backdoor.get_trigger(type=Backdoor.TRIGGER_DIS_PARK_SIGN_2, channel=channel, image_size=image_size, vmin=vmin, vmax=vmax)
+    backdoor.show_image(img=tr)
     # Cat Target
     tg = backdoor.get_target(type=Backdoor.TARGET_CAT, trigger=tr, vmin=vmin, vmax=1)
     backdoor.show_image(img=tg)
-    # Hat Target
+    #  Target
     tg = backdoor.get_target(type=Backdoor.TARGET_HAT, trigger=tr, vmin=vmin, vmax=1)
     backdoor.show_image(img=tg)
     
